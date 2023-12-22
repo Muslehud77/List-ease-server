@@ -26,6 +26,26 @@ app.use(express.json());
       const taskCollection = client.db("ListEase").collection("TaskCollection");
 
 
+      //post new task
+      app.post("/add-task",async (req, res) => {
+        const task = req.body
+        const result = await taskCollection.insertOne(task)
+        res.send(result);
+        
+      })
+
+      //get list by task
+      app.get("/all-tasks/:task/:user",async (req, res) => {
+        const task = req.params.task
+        const user = req.params.user
+        const result = await taskCollection.find({task,user}).toArray()
+        
+       res.send(result);
+        
+        
+      })
+
+
 
 
 
