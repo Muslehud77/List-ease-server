@@ -3,7 +3,7 @@ const cors = require('cors')
 const port = process.env.PORT || 5000;
 const app = express();
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 //middlewares
 app.use(cors());
 app.use(express.json());
@@ -21,7 +21,7 @@ app.use(express.json());
   async function run() {
     try {
       // Connect the client to the server	(optional starting in v4.7)
-      await client.connect();
+    //   await client.connect();
     
       const taskCollection = client.db("ListEase").collection("TaskCollection");
 
@@ -40,6 +40,32 @@ app.use(express.json());
         const user = req.params.user
         const result = await taskCollection.find({task,user}).toArray()
         
+       res.send(result);
+        
+        
+      })
+
+      //get task by id
+      app.get("/task/:id",async (req, res) => {
+        const id = {_id: new ObjectId(req.params.id)}
+       
+        const result = await taskCollection.findOne(id)
+
+       res.send(result);
+        
+        
+      })
+
+      //patch task 
+      app.patch("/edit-task/:id",async (req, res) => {
+        const id = {_id: new ObjectId(req.params.id)}
+        
+        const task = req.body
+
+
+        const result = await taskCollection.updateOne(id,{$set:task})
+
+
        res.send(result);
         
         
